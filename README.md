@@ -18,7 +18,7 @@ Este projeto contém uma API para integração com o Mercado Livre, com configur
 
 1. Clone o repositório:
 ```bash
-git clone https://github.com/seu-usuario/mercadolivre-api.git
+git clone https://github.com/reninja-a/mercado-livre-api
 cd mercadolivre-api
 ```
 
