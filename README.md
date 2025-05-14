@@ -1,5 +1,7 @@
 # API Mercado Livre
 
+O motivo? Bypass no limit do google sheets de 10 mil req por dia!
+
 Este projeto contém uma API para integração com o Mercado Livre, com configurações para deploy tanto no Vercel quanto no Render.
 
 ## Estrutura do Projeto
@@ -16,7 +18,7 @@ Este projeto contém uma API para integração com o Mercado Livre, com configur
 
 1. Clone o repositório:
 ```bash
-git clone https://github.com/seu-usuario/mercadolivre-api.git
+git clone https://github.com/reninja-a/mercado-livre-api
 cd mercadolivre-api
 ```
 
