@@ -472,22 +472,45 @@ app.post('/pegar-order', async (req, res) => {
   }
   
   try {
-    const url = `https://api.mercadolibre.com/orders/${orderId}`;
-    console.log(`Making request to: ${url}`);
+    // Verifica se orderId contém múltiplos IDs separados por vírgula
+    const orderIds = orderId.includes(',') ? orderId.split(',') : [orderId];
     
-    const response = await axios({
-      method: 'GET',
-      url,
-      headers: {
-        'Authorization': `Bearer ${accessToken}`
-      }
+    // Processa todos os IDs de ordem em paralelo
+    const promises = orderIds.map(id => {
+      const url = `https://api.mercadolibre.com/orders/${id.trim()}`;
+      console.log(`Making request to: ${url}`);
+      
+      return axios({
+        method: 'GET',
+        url,
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      }).then(response => {
+        return {
+          orderId: id.trim(),
+          success: true,
+          data: response.data
+        };
+      }).catch(error => {
+        console.error(`Error for order ID ${id}:`, error.message);
+        return {
+          orderId: id.trim(),
+          success: false,
+          error: error.message,
+          status: error.response?.status || 500,
+          data: error.response?.data || null
+        };
+      });
     });
     
-    console.log('Successfully retrieved order details');
+    const results = await Promise.all(promises);
+    
+    console.log(`Successfully processed ${results.length} order requests`);
     res.json({
       success: true,
-      message: 'Order details retrieved successfully',
-      data: response.data
+      message: `Processed ${results.length} order requests`,
+      results: results
     });
     
   } catch (error) {
