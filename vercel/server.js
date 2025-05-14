@@ -456,6 +456,52 @@ app.post('/refreshToken', async (req, res) => {
   }
 });
 
+// Endpoint para consultar detalhes de uma ordem específica
+app.post('/pegar-order', async (req, res) => {
+  console.log('Received request to /pegar-order');
+  
+  const { accessToken, orderId } = req.body;
+  
+  if (!accessToken || !orderId) {
+    const errorResponse = { 
+      error: 'Missing required parameters', 
+      details: 'accessToken and orderId are required' 
+    };
+    console.error(errorResponse);
+    return res.status(400).json(errorResponse);
+  }
+  
+  try {
+    const url = `https://api.mercadolibre.com/orders/${orderId}`;
+    console.log(`Making request to: ${url}`);
+    
+    const response = await axios({
+      method: 'GET',
+      url,
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    });
+    
+    console.log('Successfully retrieved order details');
+    res.json({
+      success: true,
+      message: 'Order details retrieved successfully',
+      data: response.data
+    });
+    
+  } catch (error) {
+    console.error('Error retrieving order details:', error);
+    const errorResponse = {
+      success: false,
+      error: error.message,
+      status: error.response?.status || 500,
+      data: error.response?.data || null
+    };
+    res.status(errorResponse.status || 500).json(errorResponse);
+  }
+});
+
 // Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
